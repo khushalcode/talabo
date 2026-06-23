@@ -5,14 +5,28 @@ on:
   workflow_dispatch:
 jobs:
   build-ios:
-    runs-on: macos-latest
+    runs-on: macos-15
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+
+      - name: Select Xcode 26
+        run: |
+          # Use Xcode 26 (required for iOS 26 SDK — App Store mandate from June 2025)
+          XCODE_PATH=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -1)
+          if [ -z "$XCODE_PATH" ]; then
+            echo "Xcode 26 not found. Available versions:"
+            ls /Applications/ | grep Xcode
+            exit 1
+          fi
+          echo "Using: $XCODE_PATH"
+          sudo xcode-select -s "$XCODE_PATH/Contents/Developer"
+          xcodebuild -version
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.44.2'
+          flutter-version: '3.32.0'
           channel: 'stable'
       - name: Install dependencies
         run: flutter pub get
@@ -78,6 +92,7 @@ jobs:
             OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/app-signing.keychain-db" \
             ONLY_ACTIVE_ARCH=NO \
             COMPILER_INDEX_STORE_ENABLE=NO \
+            IPHONEOS_DEPLOYMENT_TARGET=16.0 \
             -skipPackageSignatureValidation \
             -skipPackagePluginValidation
       - name: Export IPA
@@ -96,6 +111,3 @@ jobs:
         if: always()
         run: |
           security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-
-
-
