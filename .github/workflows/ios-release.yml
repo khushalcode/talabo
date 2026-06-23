@@ -62,7 +62,8 @@ jobs:
         run: |
           PP=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision | head -1)
           PP_UUID=$(security cms -D -i "$PP" | plutil -extract UUID raw -)
-          echo "Using profile UUID: $PP_UUID"
+          PP_NAME=$(security cms -D -i "$PP" | plutil -extract Name raw -)
+          echo "Using profile: $PP_NAME ($PP_UUID)"
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -72,7 +73,8 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM=GYY8K392ZW \
-            "PROVISIONING_PROFILE[sdk=iphoneos*]=$PP_UUID" \
+            PROVISIONING_PROFILE="$PP_UUID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PP_NAME" \
             OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/app-signing.keychain-db" \
             ONLY_ACTIVE_ARCH=NO \
             COMPILER_INDEX_STORE_ENABLE=NO \
