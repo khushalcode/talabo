@@ -64,8 +64,6 @@ jobs:
           PP_UUID=$(security cms -D -i "$PP" | plutil -extract UUID raw -)
           PP_NAME=$(security cms -D -i "$PP" | plutil -extract Name raw -)
           echo "Using profile: $PP_NAME ($PP_UUID)"
-          echo "PROVISIONING_PROFILE_SPECIFIER = $PP_NAME" >> ios/Runner/Release.xcconfig
-          echo "PROVISIONING_PROFILE = $PP_UUID" >> ios/Runner/Release.xcconfig
           xcodebuild -workspace ios/Runner.xcworkspace \
             -scheme Runner \
             -configuration Release \
@@ -75,11 +73,14 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Apple Distribution" \
             DEVELOPMENT_TEAM=GYY8K392ZW \
+            PROVISIONING_PROFILE="$PP_UUID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PP_NAME" \
             OTHER_CODE_SIGN_FLAGS="--keychain $RUNNER_TEMP/app-signing.keychain-db" \
             ONLY_ACTIVE_ARCH=NO \
             COMPILER_INDEX_STORE_ENABLE=NO \
             -skipPackageSignatureValidation \
-            -skipPackagePluginValidation
+            -skipPackagePluginValidation \
+            -allowProvisioningUpdates
       - name: Export IPA
         run: |
           xcodebuild -exportArchive \
