@@ -60,11 +60,11 @@
         <key>NSCameraUsageDescription</key>
         <string>This app requires access to the camera to upload customer profile picture.</string>
         <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-        <string>This app needs access to your location to show nearby services and delivery tracking.</string>
+        <string>Talabego uses your location to provide location-based features and improve service availability.</string>
         <key>NSLocationAlwaysUsageDescription</key>
         <string>This app needs access to your location to show nearby services and delivery tracking.</string>
         <key>NSLocationWhenInUseUsageDescription</key>
-        <string>This app needs access to location to manage coverage of restaurant and when add a new address.</string>
+        <string>Talabego uses your location to help users find nearby services and improve the app experience.</string>
         <key>NSMicrophoneUsageDescription</key>
         <string>This app requires microphone access to record your voice for speech recognition.</string>
         <key>NSPhotoLibraryUsageDescription</key>
@@ -99,3 +99,4 @@
         <string>YES</string>
 </dict>
 </plist>
+
